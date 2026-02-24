@@ -1,0 +1,39 @@
+# .pre-commit-config.yaml
+repos:
+  # 1. Các hook cơ bản để giữ repo sạch sẽ
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace      # Xóa khoảng trắng thừa cuối dòng
+      - id: end-of-file-fixer        # Đảm bảo file kết thúc bằng 1 dòng trống
+      - id: check-yaml               # Kiểm tra cú pháp các file .yaml
+      - id: check-added-large-files  # Ngăn chặn commit file quá lớn (>500KB)
+        args: ['--maxkb=500']
+      - id: check-toml               # Kiểm tra cú pháp file .toml
+
+  # 2. Bảo mật: Ngăn chặn lộ API Key (OpenAI, HuggingFace, v.v.)
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+
+  # 3. Ruff: Linter và Formatter siêu tốc (Thay thế Black, Isort, Flake8)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.15.0
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+        types_or: [ python, pyi ]
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi ]
+
+  # 4. Kiểm tra file pyproject.toml
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.25
+    hooks:
+      - id: validate-pyproject
+        # Optional extra validations from SchemaStore:
+        additional_dependencies: ["validate-pyproject-schema-store[all]"]
